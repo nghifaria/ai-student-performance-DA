@@ -1,6 +1,6 @@
 # ============================================================================
 # PROYEK SERTIFIKASI DATA ANALYST BNSP - MODUL 6: DASHBOARD BI INTERAKTIF
-# LENGKAP & UTUH (SUDAH FIXED IMPORT SCIPY T-TEST)
+# LENGKAP & UTUH (CONSOLIDATED VERSION - NO EMOJIS)
 # ============================================================================
 
 import streamlit as st
@@ -9,12 +9,12 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import os
-from scipy.stats import ttest_ind # impor fungsi uji t-test biar gak nameerror
+from scipy.stats import ttest_ind
 
 # 1. atur konfigurasi dasar halaman web dashboard bawaan streamlit
 st.set_page_config(
-    page_title="Dashboard Analisis Perilaku Belajar & Kesejahteraan Mahasiswa",
-    page_icon="🎓",
+    page_title="Dashboard Analisis Perilaku Belajar dan Kesejahteraan Mahasiswa",
+    page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -94,19 +94,27 @@ df_global = load_processed_student_data()
 # PANEL SIDEBAR KONTROL & MESIN PENAPIS DATA (FILTER ENGINE)
 # ============================================================================
 
-# mengekstrak daftar unik dari dataset global untuk parameter penapis
+# 1. membuat teks judul utama dan deskripsi proyek pada halaman utama
+st.title("Dashboard Analisis Perilaku Belajar dan Kesejahteraan Mahasiswa")
+st.markdown("""
+Dashboard Business Intelligence ini digunakan untuk menganalisis pengaruh pemanfaatan teknologi Generative AI terhadap performa akademik dan tingkat kesejahteraan mental mahasiswa berdasarkan data empiris.
+Sumber Data: ai_student_impact_dataset (50.000 Catatan Observasi).
+""")
+st.markdown("---")
+
+# 2. mengekstrak daftar unik dari dataset global untuk parameter penapis
 opsi_jurusan = sorted(df_global['Major_Category'].dropna().unique().tolist())
 urutan_studi = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Graduate']
 opsi_jenjang = [y for y in urutan_studi if y in df_global['Year_of_Study'].unique()]
 opsi_kebijakan = sorted(df_global['Institutional_Policy'].dropna().unique().tolist())
 
-# fungsi callback buat reset filter (solusi anti error session state)
+# 3. fungsi callback buat reset filter (solusi anti error session state)
 def eksekusi_reset_filter():
     st.session_state.sidebar_jurusan = opsi_jurusan
     st.session_state.sidebar_jenjang = opsi_jenjang
     st.session_state.sidebar_kebijakan = opsi_kebijakan
 
-# inisialisasi awal session state sebelum widget multiselect dimuat
+# 4. inisialisasi awal session state sebelum widget multiselect dimuat
 if 'sidebar_jurusan' not in st.session_state:
     st.session_state.sidebar_jurusan = opsi_jurusan
 if 'sidebar_jenjang' not in st.session_state:
@@ -114,9 +122,9 @@ if 'sidebar_jenjang' not in st.session_state:
 if 'sidebar_kebijakan' not in st.session_state:
     st.session_state.sidebar_kebijakan = opsi_kebijakan
 
-# menyusun komponen penapis data interaktif di area sidebar
+# 5. menyusun komponen penapis data interaktif di area sidebar
 with st.sidebar:
-    st.header("🎛️ Panel Filter Analisis")
+    st.header("Panel Filter Analisis")
     st.write("Sesuaikan kriteria di bawah ini untuk menyaring ringkasan data:")
     st.markdown("---")
     
@@ -145,7 +153,7 @@ with st.sidebar:
     st.markdown("")
     
     st.button(
-        "🔄 Reset Semua Filter", 
+        "Reset Semua Filter", 
         on_click=eksekusi_reset_filter, 
         use_container_width=True
     )
@@ -162,10 +170,10 @@ with st.sidebar:
         (df_global['Institutional_Policy'].isin(final_kebijakan))
     ].copy()
 
-    st.info(f"📊 **Data Terfilter:**\n\n**{len(df):,}** dari **{len(df_global):,}** records mahasiswa berhasil disaring.")
+    st.info(f"Data Terfilter:\n\n**{len(df):,}** dari **{len(df_global):,}** records mahasiswa berhasil disaring.")
 
 if len(df) == 0:
-    st.warning("⚠️ Tidak ada data murni yang sesuai dengan kombinasi filter Anda. Harap pilih kembali kriteria pada panel kontrol sidebar.")
+    st.warning("Tidak ada data murni yang sesuai dengan kombinasi filter Anda. Harap pilih kembali kriteria pada panel kontrol sidebar.")
     st.stop()
     
 # ============================================================================
@@ -249,7 +257,7 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Analisis Kesehatan Mental",
     "Eksplorasi Retensi Ilmu",
     "Pemetaan Matriks Risiko",
-    "Inferensi Statistik & Faktor Dominan"
+    "Inferensi Statistik dan Faktor Dominan"
 ])
 
 # --- TAB 1: OVERVIEW DEMOGRAFI ---
@@ -316,7 +324,7 @@ with tab1:
         fig_gpa_major.update_yaxes(range=[0, 4.5])
         st.plotly_chart(fig_gpa_major, use_container_width=True)
 
-# --- TAB 2: DAMPAK PERFORMA AI ---
+# --- TAB 2: DAMPAK PERFORMA AI (TERMASUK IMPLEMENTASI KUNCI) ---
 with tab2:
     st.markdown("### Korelasi Intensitas Waktu Pemanfaatan AI vs Performa Nilai")
     st.write("Eksplorasi mendalam mengenai korelasi durasi penggunaan asisten pintar terhadap prestasi akademik.")
@@ -354,7 +362,7 @@ with tab2:
         st.plotly_chart(fig_delta, use_container_width=True)
 
     st.markdown("---")
-    st.markdown("##### 📈 Sebaran Distribusi Kontinu Durasi Jam AI vs Capaian IPK Akhir")
+    st.markdown("##### Sebaran Distribusi Kontinu Durasi Jam AI vs Capaian IPK Akhir")
     
     df_sample_scatter = df.sample(min(5000, len(df)), random_state=42)
     fig_scatter_gpa = px.scatter(
@@ -377,6 +385,61 @@ with tab2:
             
     fig_scatter_gpa.update_layout(get_plotly_layout("", height_px=480, show_legend=True))
     st.plotly_chart(fig_scatter_gpa, use_container_width=True)
+
+    # ------------------------------------------------------------------------
+    # FITUR IMPLEMENTASI BARU DARI KODE: ANALISIS MURNI DELTA IPK MAHASISWA
+    # ------------------------------------------------------------------------
+    st.markdown("---")
+    st.markdown("##### Analisis Distribusi dan Korelasi Pertumbuhan Nilai (Delta IPK)")
+    st.write("Bagian di bawah ini mengadopsi analisis statistik untuk membedah sebaran pertumbuhan nilai (IPK Akhir dikurangi IPK Awal) beserta faktor perilaku belajarnya.")
+    
+    grafik_col1, grafik_col2 = st.columns(2)
+    
+    with grafik_col1:
+        # grafik grafik 1: histogram distribusi kontinu pertumbuhan delta ipk mahasiswa
+        fig_hist_delta = px.histogram(
+            df, x='GPA_Change', nbins=30,
+            color_discrete_sequence=['#1F4E78'],
+            labels={'GPA_Change': 'Perbedaan Pertumbuhan IPK (Delta IPK)'}
+        )
+        # tambahkan garis vertikal pengukur perubahan angka nol sesuai model
+        fig_hist_delta.add_vline(x=0.0, line_dash="dash", line_color="red", line_width=2)
+        fig_hist_delta.update_layout(get_plotly_layout("Distribusi Frekuensi Pertumbuhan Nilai Delta IPK Mahasiswa", height_px=400, show_legend=False))
+        fig_hist_delta.update_yaxes(title_text="Frekuensi Kemunculan (Baris)")
+        st.plotly_chart(fig_hist_delta, use_container_width=True)
+        
+    with grafik_col2:
+        # grafik grafik 2: bar chart horizontal kekuatan korelasi perilaku belajar spesifik terhadap delta ipk
+        kolom_perilaku_delta = [
+            'Traditional_Study_Hours', 'Weekly_GenAI_Hours', 'Perceived_AI_Dependency',
+            'Tool_Diversity', 'Anxiety_Level_During_Exams', 'Skill_Retention_Score'
+        ]
+        matriks_delta_corr = df[kolom_perilaku_delta].corrwith(df['GPA_Change']).sort_values()
+        
+        df_delta_ranking = pd.DataFrame({
+            'Indikator Belajar': matriks_delta_corr.index,
+            'Koefisien Korelasi (r)': matriks_delta_corr.values
+        })
+        
+        kamus_label_delta = {
+            'Traditional_Study_Hours': 'Jam Belajar Tradisional',
+            'Weekly_GenAI_Hours': 'Jam AI Mingguan',
+            'Perceived_AI_Dependency': 'Ketergantungan AI',
+            'Tool_Diversity': 'Keberagaman Alat AI',
+            'Anxiety_Level_During_Exams': 'Tingkat Kecemasan Ujian',
+            'Skill_Retention_Score': 'Skor Retensi Pengetahuan'
+        }
+        df_delta_ranking['Indikator Belajar'] = df_delta_ranking['Indikator Belajar'].map(kamus_label_delta)
+        
+        fig_delta_corr = px.bar(
+            df_delta_ranking, x='Koefisien Korelasi (r)', y='Indikator Belajar',
+            orientation='h', text='Koefisien Korelasi (r)',
+            color='Koefisien Korelasi (r)', color_continuous_scale='RdBu', range_color=[-0.3, 0.3]
+        )
+        fig_delta_corr.update_traces(texttemplate='%{text:.3f}', textposition='outside')
+        fig_delta_corr.update_layout(get_plotly_layout("Korelasi Faktor Perilaku Belajar Terhadap Delta IPK", height_px=400, show_legend=False))
+        fig_delta_corr.update_coloraxes(showscale=False)
+        st.plotly_chart(fig_delta_corr, use_container_width=True)
 
 # --- TAB 3: ANALISIS KESEHATAN MENTAL ---
 with tab3:
@@ -472,7 +535,7 @@ with tab5:
         total_danger_jiwa = len(df_high_danger)
         persen_danger_total = (total_danger_jiwa / len(df)) * 100 if len(df) > 0 else 0.0
         
-        st.markdown("##### 🔴 Profil Mahasiswa Kelompok Rentan (Zona Bahaya)")
+        st.markdown("##### Profil Mahasiswa Kelompok Rentan (Zona Bahaya)")
         st.markdown(f"Terdapat sebanyak **{total_danger_jiwa:,} jiwa** ({persen_danger_total:.1f}% dari data filter) mahasiswa yang tergolong dalam kondisi kritis.")
         
         if total_danger_jiwa > 0:
@@ -504,9 +567,9 @@ with tab6:
             st.write(f"* Nilai P-Value : `{p_val_gpa:.4f}`")
             
             if p_val_gpa < 0.05:
-                st.error("**Kesimpulan:** Signifikan (p < 0.05). Akses finansial platform premium memberikan perbedaan performa akademik yang nyata.")
+                st.error("Kesimpulan: Signifikan (p < 0.05). Akses finansial platform premium memberikan perbedaan performa akademik yang nyata.")
             else:
-                st.info("**Kesimpulan:** Tidak Signifikan (p >= 0.05). Kesenjangan finansial tidak menciptakan perbedaan performa akademik yang nyata.")
+                st.info("Kesimpulan: Tidak Signifikan (p >= 0.05). Kesenjangan finansial tidak menciptakan perbedaan performa akademik yang nyata.")
                 
         with col_ttest2:
             st.markdown("**Parameter Evaluasi: Skor Retensi Pengetahuan (Skill Retention)**")
@@ -514,9 +577,9 @@ with tab6:
             st.write(f"* Nilai P-Value : `{p_val_ret:.4f}`")
             
             if p_val_ret < 0.05:
-                st.error("**Kesimpulan:** Signifikan (p < 0.05). Akses finansial platform premium memberikan perbedaan daya retensi pengetahuan yang nyata.")
+                st.error("Kesimpulan: Signifikan (p < 0.05). Akses finansial platform premium memberikan perbedaan daya retensi pengetahuan yang nyata.")
             else:
-                st.info("**Kesimpulan:** Tidak Signifikan (p >= 0.05). Kesenjangan finansial tidak menciptakan perbedaan daya retensi pengetahuan yang nyata.")
+                st.info("Kesimpulan: Tidak Signifikan (p >= 0.05). Kesenjangan finansial tidak menciptakan perbedaan daya retensi pengetahuan yang nyata.")
     else:
         st.warning("Jumlah sampel data terfilter tidak mencukupi untuk melakukan uji t-test.")
         
@@ -560,7 +623,7 @@ with tab6:
     st.plotly_chart(fig_dominan_bar, use_container_width=True)
     
     fitur_paling_positif = matriks_target_corr.idxmax()
-    st.success(f"**Insight Konklusi Kebijakan:** Indikator tunggal yang bertindak sebagai faktor prediktor paling dominan memengaruhi keberhasilan nilai akademik mahasiswa secara positif adalah **{kamus_label_indo[fitur_paling_positif]}** dengan nilai koefisien korelasi mencapai **r = {matriks_target_corr[fitur_paling_positif]:+.3f}**.")
+    st.success(f"Insight Konklusi Kebijakan: Indikator tunggal yang bertindak sebagai faktor prediktor paling dominan memengaruhi keberhasilan nilai akademik mahasiswa secara positif adalah **{kamus_label_indo[fitur_paling_positif]}** dengan nilai koefisien korelasi mencapai **r = {matriks_target_corr[fitur_paling_positif]:+.3f}**.")
 
 # ============================================================================
 # BAGIAN BAWAH DASHBOARD: CONTAINER EKSPLORASI DATA MENTAH BERSIH & FITUR UNDUH
