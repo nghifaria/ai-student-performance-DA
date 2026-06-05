@@ -172,7 +172,7 @@ if len(df) == 0:
 # KEY PERFORMANCE INDICATORS (KPI) GENERATOR
 # ============================================================================
 
-st.subheader("📌 Indikator Kinerja Utama (Key Performance Indicators)")
+st.subheader("Indikator Kinerja Utama (Key Performance Indicators)")
 st.markdown("Berikut adalah ringkasan metrik performa dan kesejahteraan mahasiswa berdasarkan parameter filter aktif:")
 
 total_mhs_filter = len(df)
@@ -199,7 +199,7 @@ kpi_col1, kpi_col2, kpi_col3, kpi_col4, kpi_col5 = st.columns(5)
 
 with kpi_col1:
     st.metric(
-        label="👥 Total Mahasiswa",
+        label="Total Mahasiswa",
         value=f"{total_mhs_filter:,} Mhs",
         delta=f"{total_mhs_filter - len(df_global):,} mhs",
         delta_color="off"
@@ -207,7 +207,7 @@ with kpi_col1:
 
 with kpi_col2:
     st.metric(
-        label="📈 Rata-rata IPK Akhir",
+        label="Rata-rata IPK Akhir",
         value=f"{avg_post_gpa_filter:.2f} / 4.00",
         delta=f"{delta_gpa:+.3f} vs IPK Awal",
         delta_color="normal"
@@ -215,7 +215,7 @@ with kpi_col2:
 
 with kpi_col3:
     st.metric(
-        label="🧠 Retensi Pengetahuan",
+        label="Retensi Pengetahuan",
         value=f"{avg_retention_filter:.1f}%",
         delta=f"{delta_retention:+.2f}% vs Global",
         delta_color="normal"
@@ -223,7 +223,7 @@ with kpi_col3:
 
 with kpi_col4:
     st.metric(
-        label="⚠️ High Burnout Risk",
+        label="High Burnout Risk",
         value=f"{pct_high_burnout_filter:.1f}%",
         delta=f"{delta_burnout:+.2f}% vs Global",
         delta_color="inverse"
@@ -231,7 +231,7 @@ with kpi_col4:
 
 with kpi_col5:
     st.metric(
-        label="🤖 Rata-rata Jam AI",
+        label="Rata-rata Jam AI",
         value=f"{avg_ai_hours_filter:.1f} jam/mgg",
         delta=f"{delta_ai_hours:+.2f} jam vs Global",
         delta_color="off"
@@ -244,17 +244,17 @@ st.markdown("---")
 # ============================================================================
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "📋 Overview Demografi",
-    "🤖 Dampak Performa AI",
-    "🧠 Analisis Kesehatan Mental",
-    "📖 Eksplorasi Retensi Ilmu",
-    "⚠️ Pemetaan Matriks Risiko",
-    "⚖️ Inferensi Statistik & Faktor Dominan"
+    "Overview Demografi",
+    "Dampak Performa AI",
+    "Analisis Kesehatan Mental",
+    "Eksplorasi Retensi Ilmu",
+    "Pemetaan Matriks Risiko",
+    "Inferensi Statistik & Faktor Dominan"
 ])
 
 # --- TAB 1: OVERVIEW DEMOGRAFI ---
 with tab1:
-    st.markdown("### 📋 Gambaran Umum Distribusi Sampel Mahasiswa")
+    st.markdown("### Gambaran Umum Distribusi Sampel Mahasiswa")
     st.write("Analisis makroskopis mengenai sebaran mahasiswa aktif berdasarkan rumpun keilmuan, jenjang tingkat angkatan, serta jenis regulasi penggunaan teknologi digital.")
     
     ov_col1, ov_col2 = st.columns(2)
@@ -318,7 +318,7 @@ with tab1:
 
 # --- TAB 2: DAMPAK PERFORMA AI ---
 with tab2:
-    st.markdown("### 🤖 Korelasi Intensitas Waktu Pemanfaatan AI vs Performa Nilai")
+    st.markdown("### Korelasi Intensitas Waktu Pemanfaatan AI vs Performa Nilai")
     st.write("Eksplorasi mendalam mengenai korelasi durasi penggunaan asisten pintar terhadap prestasi akademik.")
     
     acad_col1, acad_col2 = st.columns(2)
@@ -380,7 +380,7 @@ with tab2:
 
 # --- TAB 3: ANALISIS KESEHATAN MENTAL ---
 with tab3:
-    st.markdown("### 🧠 Dampak Regulasi Kampus Terhadap Kesehatan Mental Responden")
+    st.markdown("### Dampak Regulasi Kampus Terhadap Kesehatan Mental Responden")
     st.write("Analisis proporsi tingkat stres kejenuhan (*burnout*) serta tingkat kecemasan ujian berdasarkan variasi kebijakan kampus.")
     
     men_col1, men_col2 = st.columns(2)
@@ -410,7 +410,7 @@ with tab3:
 
 # --- TAB 4: EKSPLORASI RETENSI ILMU ---
 with tab4:
-    st.markdown("### 📖 Evaluasi Kualitas Belajar: Penurunan Daya Retensi Ilmu")
+    st.markdown("### Evaluasi Kualitas Belajar: Penurunan Daya Retensi Ilmu")
     st.write("Menguji risiko degradasi retensi pemahaman materi kuliah akibat tingkat ketergantungan ai.")
     
     ret_col1, ret_col2 = st.columns(2)
@@ -449,7 +449,7 @@ with tab4:
 
 # --- TAB 5: PEMETAAN MATRIKS RISIKO ---
 with tab5:
-    st.markdown("### ⚠️ Pemetaan Matriks Risiko Kerentanan Mahasiswa")
+    st.markdown("### Pemetaan Matriks Risiko Kerentanan Mahasiswa")
     st.write("Identifikasi dini kelompok responden yang berada dalam zona bahaya akademik akibat kombinasi dependensi ekstrem dan burnout tinggi.")
     
     df_matrix = pd.crosstab(df['AI_Dependency_Segment'], df['Burnout_Risk_Level'])
@@ -484,7 +484,7 @@ with tab5:
 
 # --- TAB 6: INFERENSI STATISTIK & FAKTOR DOMINAN ---
 with tab6:
-    st.markdown("### ⚖️ Analisis Inferensi Pengujian Hipotesis & Faktor Dominan")
+    st.markdown("### Analisis Inferensi Pengujian Hipotesis & Faktor Dominan")
     st.write("Bagian ini menyajikan pembuktian ilmiah untuk menguji isu kesetaraan akses digital (akun premium vs gratis) serta memetakan faktor perilaku belajar yang paling memengaruhi keberhasilan studi.")
     
     df_paid = df[df['Paid_Subscription'] == True]
@@ -504,9 +504,9 @@ with tab6:
             st.write(f"* Nilai P-Value : `{p_val_gpa:.4f}`")
             
             if p_val_gpa < 0.05:
-                st.error("🔬 **Kesimpulan:** Signifikan (p < 0.05). Akses finansial platform premium memberikan perbedaan performa akademik yang nyata.")
+                st.error("**Kesimpulan:** Signifikan (p < 0.05). Akses finansial platform premium memberikan perbedaan performa akademik yang nyata.")
             else:
-                st.info("🔬 **Kesimpulan:** Tidak Signifikan (p >= 0.05). Kesenjangan finansial tidak menciptakan perbedaan performa akademik yang nyata.")
+                st.info("**Kesimpulan:** Tidak Signifikan (p >= 0.05). Kesenjangan finansial tidak menciptakan perbedaan performa akademik yang nyata.")
                 
         with col_ttest2:
             st.markdown("**Parameter Evaluasi: Skor Retensi Pengetahuan (Skill Retention)**")
@@ -514,9 +514,9 @@ with tab6:
             st.write(f"* Nilai P-Value : `{p_val_ret:.4f}`")
             
             if p_val_ret < 0.05:
-                st.error("🔬 **Kesimpulan:** Signifikan (p < 0.05). Akses finansial platform premium memberikan perbedaan daya retensi pengetahuan yang nyata.")
+                st.error("**Kesimpulan:** Signifikan (p < 0.05). Akses finansial platform premium memberikan perbedaan daya retensi pengetahuan yang nyata.")
             else:
-                st.info("🔬 **Kesimpulan:** Tidak Signifikan (p >= 0.05). Kesenjangan finansial tidak menciptakan perbedaan daya retensi pengetahuan yang nyata.")
+                st.info("**Kesimpulan:** Tidak Signifikan (p >= 0.05). Kesenjangan finansial tidak menciptakan perbedaan daya retensi pengetahuan yang nyata.")
     else:
         st.warning("Jumlah sampel data terfilter tidak mencukupi untuk melakukan uji t-test.")
         
@@ -560,20 +560,20 @@ with tab6:
     st.plotly_chart(fig_dominan_bar, use_container_width=True)
     
     fitur_paling_positif = matriks_target_corr.idxmax()
-    st.success(f"💡 **Insight Konklusi Kebijakan:** Indikator tunggal yang bertindak sebagai faktor prediktor paling dominan memengaruhi keberhasilan nilai akademik mahasiswa secara positif adalah **{kamus_label_indo[fitur_paling_positif]}** dengan nilai koefisien korelasi mencapai **r = {matriks_target_corr[fitur_paling_positif]:+.3f}**.")
+    st.success(f"**Insight Konklusi Kebijakan:** Indikator tunggal yang bertindak sebagai faktor prediktor paling dominan memengaruhi keberhasilan nilai akademik mahasiswa secara positif adalah **{kamus_label_indo[fitur_paling_positif]}** dengan nilai koefisien korelasi mencapai **r = {matriks_target_corr[fitur_paling_positif]:+.3f}**.")
 
 # ============================================================================
 # BAGIAN BAWAH DASHBOARD: CONTAINER EKSPLORASI DATA MENTAH BERSIH & FITUR UNDUH
 # ============================================================================
 st.markdown("---")
-st.subheader("📋 Pencarian & Eksplorasi Data Mentah Bersih")
+st.subheader("Pencarian & Eksplorasi Data Mentah Bersih")
 st.write("Gunakan tabel di bawah ini untuk melihat rekaman data individual secara mendetail atau mengekstrak hasil saringan filter:")
 
 st.dataframe(df, use_container_width=True)
 
 csv_buffer = df.to_csv(index=False).encode('utf-8')
 st.download_button(
-    label="📥 Unduh Data Terfilter (.CSV)",
+    label="Unduh Data Terfilter (.CSV)",
     data=csv_buffer,
     file_name="data_mahasiswa_terfilter_clean.csv",
     mime="text/csv",
