@@ -309,7 +309,44 @@ with tab1:
     ).reset_index()
     df_clus_profile.columns = ['Klaster Hasil K-Means', 'Rata-rata IPK Akhir', 'Rata-rata Jam AI/Minggu', 'Rata-rata Dependensi AI', 'Rata-rata Kecemasan Ujian', 'Rata-rata Retensi Ilmu (%)']
     st.dataframe(df_clus_profile.style.format(precision=2), use_container_width=True)
-    
+    # ============================================================================
+    # PERBAIKAN 4: PENJELASAN KARAKTERISTIK PROFIL KLASTER (REVISI INSIGHT BNSP)
+    # ============================================================================
+    st.markdown("---")
+    st.markdown("##### 🎯 Narasi Interpretasi Profiling Klaster & Peta Intervensi Kebijakan")
+    st.write("Berdasarkan algoritme Unsupervised Machine Learning K-Means, populasi mahasiswa terbagi secara alami ke dalam 4 karakteristik klaster murni berikut:")
+
+    cl_col1, cl_col2 = st.columns(2)
+
+    with cl_col1:
+        st.success("""
+        **🟢 Klaster 2: Zona Optimal (Strategic Learners)**
+        * **Karakteristik:** Memiliki capaian rata-rata IPK Akhir tertinggi (**3.67**) dan daya pemahaman materi paling kuat (**84.96%**).
+        * **Perilaku AI:** Menggunakan AI secara sehat dan moderat (6.01 jam/minggu) dengan dependensi rendah.
+        * **Rekomendasi Kebijakan:** Kelompok ini dijadikan acuan standar (*role model*) perguruan tinggi dalam menyusun pedoman literasi penggunaan AI yang ideal.
+        """)
+        
+        st.info("""
+        **🔵 Klaster 1: Mahasiswa Mandiri Konvensional**
+        * **Karakteristik:** Performa nilai akademik stabil dan aman (**3.56**), kecemasan ujian paling rendah (**3.61**).
+        * **Perilaku AI:** Memiliki durasi interaksi AI paling minim (**5.32 jam/minggu**), mengandalkan metode belajar tradisional.
+        * **Rekomendasi Kebijakan:** Didorong untuk mulai mengenal perangkat AI generatif secara terukur guna meningkatkan efisiensi pengerjaan tugas tanpa merusak kemandirian berpikir.
+        """)
+
+    with cl_col2:
+        st.warning("""
+        **🟡 Klaster 3: Krisis Akademik Murni**
+        * **Karakteristik:** Mengalami penurunan nilai akademik paling fatal di bawah standar kelulusan dengan IPK rata-rata **2.73**.
+        * **Perilaku AI:** Durasi jam pakai AI normal (6.10 jam/minggu), menandakan masalah bukan dipicu oleh teknologi.
+        * **Rekomendasi Kebijakan:** Diarahkan langsung ke unit remedial dan kelas pendampingan akademik intensif (*tutoring*) karena indikator kegagalan berasal dari faktor kompetensi dasar kuliah.
+        """)
+        
+        st.error("""
+        **🔴 Klaster 4: Zona Bahaya Kritis (AI Dependent & High Burnout)**
+        * **Karakteristik:** Mengalami kecemasan ujian tertinggi (**6.00**), penurunan retensi kognitif ilmu, dan **Tingkat Burnout Dominan HIGH**.
+        * **Perilaku AI:** Menggunakan AI secara sangat ekstrem mencapai **22.95 jam/minggu** dengan tingkat ketergantungan psikologis akut (6.21).
+        * **Rekomendasi Kebijakan:** PRIORITAS UTAMA INTERVENSI KAMPUS. Wajib dirujuk ke Unit Konseling untuk detoksifikasi digital, pembatasan kuota log portal AI, serta terapi manajemen stres agar kelelahan mentalnya tidak berujung pada drop-out.
+        """)
     st.markdown("---")
     st.markdown("### Pemetaan Matriks Risiko Kerentanan Mahasiswa (Manual Segment)")
     st.write("Identifikasi dini kelompok responden yang berada dalam zona bahaya akademik akibat kombinasi dependensi ekstrem dan burnout tinggi.")
