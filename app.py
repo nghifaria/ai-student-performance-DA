@@ -579,7 +579,6 @@ with tab5:
         fig_ret_bar.update_coloraxes(showscale=False)
         fig_ret_bar.update_yaxes(range=[0, 105])
         st.plotly_chart(fig_ret_bar, use_container_width=True)
-
 # --- TAB 6: INFERENSI STATISTIK & FAKTOR DOMINAN ---
 with tab6:
     st.markdown("### Analisis Inferensi Pengujian Hipotesis & Faktor Dominan")
@@ -612,7 +611,7 @@ with tab6:
             st.write(f"* Nilai P-Value : `{p_val_ret:.4f}`")
             
             if p_val_ret < 0.05:
-                st.error("Kesimpulan: Signifikan (p < 0.05). Akses finansial platform premium memberikan perbedaan daya retensi pengetahuan yang nyata.")
+                st.error("Kesinction: Signifikan (p < 0.05). Akses finansial platform premium memberikan perbedaan daya retensi pengetahuan yang nyata.")
             else:
                 st.info("Kesimpulan: Tidak Signifikan (p >= 0.05). Kesenjangan finansial tidak menciptakan perbedaan daya retensi pengetahuan yang nyata.")
     else:
@@ -636,6 +635,18 @@ with tab6:
         'Koefisien Korelasi Pearson (r)': matriks_target_corr.values
     })
     
+    # MENDEFINISIKAN DICTIONARY YANG HILANG AGAR TIDAK TERJADI NAMEERROR
+    kamus_label_indo = {
+        'Pre_Semester_GPA': 'IPK Awal Semester (Pre-GPA)',
+        'Weekly_GenAI_Hours': 'Durasi Jam Penggunaan AI Mingguan',
+        'Traditional_Study_Hours': 'Alokasi Jam Belajar Tradisional',
+        'Tool_Diversity': 'Ragam Keberagaman Perangkat AI',
+        'Perceived_AI_Dependency': 'Tingkat Ketergantungan Psikologis AI',
+        'Anxiety_Level_During_Exams': 'Tingkat Kecemasan Menghadapi Ujian',
+        'Skill_Retention_Score': 'Skor Daya Retensi Pengetahuan'
+    }
+    
+    # Eksekusi pemetaan nama kolom ke bahasa indonesia murni
     df_corr_ranking['Indikator Perilaku'] = df_corr_ranking['Indikator Perilaku'].map(kamus_label_indo)
     
     fig_dominan_bar = px.bar(
@@ -644,13 +655,12 @@ with tab6:
         color_continuous_scale='RdBu', range_color=[-1, 1]
     )
     fig_dominan_bar.update_traces(texttemplate='%{text:.3f}', textposition='outside')
-    fig_dominan_bar.update_layout(get_plotly_layout("", height_px=400, show_legend=False))
+    fig_dominan_bar.update_layout(get_plotly_layout("Peringkat Koefisien Korelasi Faktor terhadap IPK Akhir", height_px=400, show_legend=False))
     fig_dominan_bar.update_coloraxes(showscale=False)
     st.plotly_chart(fig_dominan_bar, use_container_width=True)
     
     fitur_paling_positif = matriks_target_corr.idxmax()
     st.success(f"Insight Konklusi Kebijakan: Indikator tunggal yang bertindak sebagai faktor prediktor paling dominan memengaruhi keberhasilan nilai akademik mahasiswa secara positif adalah **{kamus_label_indo[fitur_paling_positif]}** dengan nilai koefisien korelasi mencapai **r = {matriks_target_corr[fitur_paling_positif]:+.3f}**.")
-
 # ============================================================================
 # BAGIAN BAWAH DASHBOARD: CONTAINER EKSPLORASI DATA MENTAH BERSIH & FITUR UNDUH
 # ============================================================================
