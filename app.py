@@ -402,7 +402,8 @@ with tab2:
         fig_hist_delta.update_yaxes(title_text="Frekuensi Kemunculan (Baris)")
         st.plotly_chart(fig_hist_delta, use_container_width=True)
         
-    with grafik_col2:
+with grafik_col2:
+        # grafik grafik 2: bar chart horizontal kekuatan korelasi perilaku belajar spesifik terhadap delta ipk
         kolom_perilaku_delta = [
             'Traditional_Study_Hours', 'Weekly_GenAI_Hours', 'Perceived_AI_Dependency',
             'Tool_Diversity', 'Anxiety_Level_During_Exams', 'Skill_Retention_Score'
@@ -413,6 +414,18 @@ with tab2:
             'Indikator Belajar': matriks_delta_corr.index,
             'Koefisien Korelasi (r)': matriks_delta_corr.values
         })
+        
+        # Deklarasi kamus label yang hilang untuk pemetaan nama variabel ke bahasa indonesia
+        kamus_label_delta = {
+            'Traditional_Study_Hours': 'Jam Belajar Tradisional',
+            'Weekly_GenAI_Hours': 'Jam AI Mingguan',
+            'Perceived_AI_Dependency': 'Ketergantungan AI',
+            'Tool_Diversity': 'Keberagaman Alat AI',
+            'Anxiety_Level_During_Exams': 'Tingkat Kecemasan Ujian',
+            'Skill_Retention_Score': 'Skor Retensi Pengetahuan'
+        }
+        
+        # Eksekusi pemetaan menggunakan objek kamus yang sudah didefinisikan di atas
         df_delta_ranking['Indikator Belajar'] = df_delta_ranking['Indikator Belajar'].map(kamus_label_delta)
         
         fig_delta_corr = px.bar(
@@ -424,7 +437,7 @@ with tab2:
         fig_delta_corr.update_layout(get_plotly_layout("Korelasi Faktor Perilaku Belajar Terhadap Delta IPK", height_px=400, show_legend=False))
         fig_delta_corr.update_coloraxes(showscale=False)
         st.plotly_chart(fig_delta_corr, use_container_width=True)
-
+        
 # --- TAB 3: ANALISIS KESEHATAN MENTAL ---
 with tab3:
     st.markdown("### Dampak Regulasi Kampus Terhadap Kesehatan Mental Responden")
