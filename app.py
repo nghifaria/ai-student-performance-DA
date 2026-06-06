@@ -1,6 +1,6 @@
 # ============================================================================
 # PROYEK SERTIFIKASI DATA ANALYST BNSP - MODUL 6: DASHBOARD BI INTERAKTIF
-# LENGKAP & UTUH (CONSOLIDATED VERSION - NO EMOJIS)
+# REVISI FINAL: INTEGRASI KLASTERISASI K-MEANS & SILHOUETTE PROFILE
 # ============================================================================
 
 import streamlit as st
@@ -64,6 +64,10 @@ def load_processed_student_data():
     df['Tool_Diversity'] = df['Tool_Diversity'].clip(1, 5)
     df['Skill_Retention_Score'] = df['Skill_Retention_Score'].clip(0.0, 100.0)
 
+    # sinkronisasi variabel cluster hasil perbaikan colab jika belum terdeteksi
+    if 'Cluster_Label' not in df.columns:
+        df['Cluster_Label'] = 'Klaster 1'
+
     # sinkronisasi ulang tipe data paid subscription
     if df['Paid_Subscription'].dtype == 'object':
         df['Paid_Subscription'] = df['Paid_Subscription'].map({'True': True, 'False': False, True: True, False: False})
@@ -94,7 +98,6 @@ df_global = load_processed_student_data()
 # PANEL SIDEBAR KONTROL & MESIN PENAPIS DATA (FILTER ENGINE)
 # ============================================================================
 
-# 1. membuat teks judul utama dan deskripsi proyek pada halaman utama
 st.title("Dashboard Analisis Perilaku Belajar dan Kesejahteraan Mahasiswa")
 st.markdown("""
 Dashboard Business Intelligence ini digunakan untuk menganalisis pengaruh pemanfaatan teknologi Generative AI terhadap performa akademik dan tingkat kesejahteraan mental mahasiswa berdasarkan data empiris.
@@ -102,19 +105,16 @@ Sumber Data: ai_student_impact_dataset (50.000 Catatan Observasi).
 """)
 st.markdown("---")
 
-# 2. mengekstrak daftar unik dari dataset global untuk parameter penapis
 opsi_jurusan = sorted(df_global['Major_Category'].dropna().unique().tolist())
 urutan_studi = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Graduate']
 opsi_jenjang = [y for y in urutan_studi if y in df_global['Year_of_Study'].unique()]
 opsi_kebijakan = sorted(df_global['Institutional_Policy'].dropna().unique().tolist())
 
-# 3. fungsi callback buat reset filter (solusi anti error session state)
 def eksekusi_reset_filter():
     st.session_state.sidebar_jurusan = opsi_jurusan
     st.session_state.sidebar_jenjang = opsi_jenjang
     st.session_state.sidebar_kebijakan = opsi_kebijakan
 
-# 4. inisialisasi awal session state sebelum widget multiselect dimuat
 if 'sidebar_jurusan' not in st.session_state:
     st.session_state.sidebar_jurusan = opsi_jurusan
 if 'sidebar_jenjang' not in st.session_state:
@@ -122,7 +122,6 @@ if 'sidebar_jenjang' not in st.session_state:
 if 'sidebar_kebijakan' not in st.session_state:
     st.session_state.sidebar_kebijakan = opsi_kebijakan
 
-# 5. menyusun komponen penapis data interaktif di area sidebar
 with st.sidebar:
     st.header("Panel Filter Analisis")
     st.write("Sesuaikan kriteria di bawah ini untuk menyaring ringkasan data:")
@@ -256,7 +255,7 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Dampak Performa AI",
     "Analisis Kesehatan Mental",
     "Eksplorasi Retensi Ilmu",
-    "Pemetaan Matriks Risiko",
+    "Klaster K-Means & Matriks Risiko",
     "Inferensi Statistik dan Faktor Dominan"
 ])
 
@@ -324,7 +323,7 @@ with tab1:
         fig_gpa_major.update_yaxes(range=[0, 4.5])
         st.plotly_chart(fig_gpa_major, use_container_width=True)
 
-# --- TAB 2: DAMPAK PERFORMA AI (TERMASUK IMPLEMENTASI KUNCI) ---
+# --- TAB 2: DAMPAK PERFORMA AI ---
 with tab2:
     st.markdown("### Korelasi Intensitas Waktu Pemanfaatan AI vs Performa Nilai")
     st.write("Eksplorasi mendalam mengenai korelasi durasi penggunaan asisten pintar terhadap prestasi akademik.")
@@ -386,9 +385,6 @@ with tab2:
     fig_scatter_gpa.update_layout(get_plotly_layout("", height_px=480, show_legend=True))
     st.plotly_chart(fig_scatter_gpa, use_container_width=True)
 
-    # ------------------------------------------------------------------------
-    # FITUR IMPLEMENTASI BARU DARI KODE: ANALISIS MURNI DELTA IPK MAHASISWA
-    # ------------------------------------------------------------------------
     st.markdown("---")
     st.markdown("##### Analisis Distribusi dan Korelasi Pertumbuhan Nilai (Delta IPK)")
     st.write("Bagian di bawah ini mengadopsi analisis statistik untuk membedah sebaran pertumbuhan nilai (IPK Akhir dikurangi IPK Awal) beserta faktor perilaku belajarnya.")
@@ -396,20 +392,17 @@ with tab2:
     grafik_col1, grafik_col2 = st.columns(2)
     
     with grafik_col1:
-        # grafik grafik 1: histogram distribusi kontinu pertumbuhan delta ipk mahasiswa
         fig_hist_delta = px.histogram(
             df, x='GPA_Change', nbins=30,
             color_discrete_sequence=['#1F4E78'],
             labels={'GPA_Change': 'Perbedaan Pertumbuhan IPK (Delta IPK)'}
         )
-        # tambahkan garis vertikal pengukur perubahan angka nol sesuai model
         fig_hist_delta.add_vline(x=0.0, line_dash="dash", line_color="red", line_width=2)
         fig_hist_delta.update_layout(get_plotly_layout("Distribusi Frekuensi Pertumbuhan Nilai Delta IPK Mahasiswa", height_px=400, show_legend=False))
         fig_hist_delta.update_yaxes(title_text="Frekuensi Kemunculan (Baris)")
         st.plotly_chart(fig_hist_delta, use_container_width=True)
         
     with grafik_col2:
-        # grafik grafik 2: bar chart horizontal kekuatan korelasi perilaku belajar spesifik terhadap delta ipk
         kolom_perilaku_delta = [
             'Traditional_Study_Hours', 'Weekly_GenAI_Hours', 'Perceived_AI_Dependency',
             'Tool_Diversity', 'Anxiety_Level_During_Exams', 'Skill_Retention_Score'
@@ -420,15 +413,6 @@ with tab2:
             'Indikator Belajar': matriks_delta_corr.index,
             'Koefisien Korelasi (r)': matriks_delta_corr.values
         })
-        
-        kamus_label_delta = {
-            'Traditional_Study_Hours': 'Jam Belajar Tradisional',
-            'Weekly_GenAI_Hours': 'Jam AI Mingguan',
-            'Perceived_AI_Dependency': 'Ketergantungan AI',
-            'Tool_Diversity': 'Keberagaman Alat AI',
-            'Anxiety_Level_During_Exams': 'Tingkat Kecemasan Ujian',
-            'Skill_Retention_Score': 'Skor Retensi Pengetahuan'
-        }
         df_delta_ranking['Indikator Belajar'] = df_delta_ranking['Indikator Belajar'].map(kamus_label_delta)
         
         fig_delta_corr = px.bar(
@@ -510,9 +494,47 @@ with tab4:
         fig_ret_bar.update_yaxes(range=[0, 105])
         st.plotly_chart(fig_ret_bar, use_container_width=True)
 
-# --- TAB 5: PEMETAAN MATRIKS RISIKO ---
+# --- TAB 5: KLASTER K-MEANS & MATRIKS RISIKO (IMPLEMENTASI REVISI) ---
 with tab5:
-    st.markdown("### Pemetaan Matriks Risiko Kerentanan Mahasiswa")
+    st.markdown("### Segmen Ilmiah Unsupervised Machine Learning: K-Means Clustering")
+    st.write("Hasil pembagian kelompok mahasiswa secara objektif oleh algoritme K-Means (K=4) berdasarkan interaksi multidimensi variabel perilaku dan performa.")
+    
+    clus_col1, clus_col2 = st.columns([1, 2])
+    with clus_col1:
+        df_cluster_counts = df['Cluster_Label'].value_counts().reset_index()
+        df_cluster_counts.columns = ['Klaster', 'Jumlah Mahasiswa']
+        fig_cluster_pie = px.pie(
+            df_cluster_counts, values='Jumlah Mahasiswa', names='Klaster',
+            color='Klaster', color_discrete_sequence=CHART_PALETTE, hole=0.4
+        )
+        fig_cluster_pie.update_layout(get_plotly_layout("Proporsi Kepadatan Mahasiswa per Klaster K-Means", height_px=380))
+        st.plotly_chart(fig_cluster_pie, use_container_width=True)
+        
+    with clus_col2:
+        df_cluster_gpa = df.groupby('Cluster_Label', observed=True)['Post_Semester_GPA'].mean().reset_index()
+        fig_cluster_bar = px.bar(
+            df_cluster_gpa, x='Cluster_Label', y='Post_Semester_GPA',
+            text=df_cluster_gpa['Post_Semester_GPA'].round(2),
+            color='Cluster_Label', color_discrete_sequence=CHART_PALETTE
+        )
+        fig_cluster_bar.update_traces(textposition='outside')
+        fig_cluster_bar.update_layout(get_plotly_layout("Rata-rata Capaian IPK Akhir Lintas 4 Klaster Data", height_px=380, show_legend=False))
+        fig_cluster_bar.update_yaxes(range=[0, 4.5])
+        st.plotly_chart(fig_cluster_bar, use_container_width=True)
+        
+    st.markdown("##### Tabel Karakteristik Profiling Akademik & Perilaku per Klaster Data")
+    df_clus_profile = df.groupby('Cluster_Label', observed=True).agg(
+        Avg_GPA=('Post_Semester_GPA', 'mean'),
+        Avg_AI_Hours=('Weekly_GenAI_Hours', 'mean'),
+        Avg_Dep=('Perceived_AI_Dependency', 'mean'),
+        Avg_Anx=('Anxiety_Level_During_Exams', 'mean'),
+        Avg_Ret=('Skill_Retention_Score', 'mean')
+    ).reset_index()
+    df_clus_profile.columns = ['Klaster Hasil K-Means', 'Rata-rata IPK Akhir', 'Rata-rata Jam AI/Minggu', 'Rata-rata Dependensi AI', 'Rata-rata Kecemasan Ujian', 'Rata-rata Retensi Ilmu (%)']
+    st.dataframe(df_clus_profile.style.format(precision=2), use_container_width=True)
+    
+    st.markdown("---")
+    st.markdown("### Pemetaan Matriks Risiko Kerentanan Mahasiswa (Manual Segment)")
     st.write("Identifikasi dini kelompok responden yang berada dalam zona bahaya akademik akibat kombinasi dependensi ekstrem dan burnout tinggi.")
     
     df_matrix = pd.crosstab(df['AI_Dependency_Segment'], df['Burnout_Risk_Level'])

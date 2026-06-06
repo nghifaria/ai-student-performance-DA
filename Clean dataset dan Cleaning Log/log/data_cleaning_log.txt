@@ -1,0 +1,7 @@
+=== LOG TRANSFORMATI DAN PEMBERSIHAN DATA MAHASISWA ===
+Dimensi akhir dataset bersih: 49994 baris x 16 kolom
+- Normalisasi tipe data campuran Student_ID ke tipe string dan Paid_Subscription ke tipe boolean
+- Penghapusan baris kosong pada peubah target Post_Semester_GPA secara listwise deletion
+- Imputasi nilai kosong pada peubah kategorik Primary_Use_Case menggunakan nilai modus
+- Eliminasi baris data dengan nilai invalid '123' pada kolom Year_of_Study
+- Eliminasi baris pencilan tidak logis (Pre/Post GPA > 4.00 dan Tool_Diversity > 5) sesuai batasan aturan bisnis
